@@ -1,52 +1,58 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using Components;
+using TMPro;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
+[UpdateAfter(typeof(EndSimulationEntityCommandBufferSystem))]
 public partial class DetectNearestEnemySystem : SystemBase
 {
-    
-    protected override void OnUpdate()
+    private EntityQuery m_query;
+    private EndSimulationEntityCommandBufferSystem m_ecbs;
+
+    protected override void OnCreate()
     {
-        var targetEntityQuery = GetEntityQuery(ComponentType.ReadOnly<EnemyTagComponent>(), ComponentType.ReadOnly<LocalToWorld>());
-        var targetPositionNativeArray = targetEntityQuery.ToComponentDataArray<LocalToWorld>(Allocator.TempJob);
-        var targetLayerNativeArray = targetEntityQuery.ToComponentDataArray<EnemyTagComponent>(Allocator.TempJob);
-        
-        FindTarget(targetPositionNativeArray,targetLayerNativeArray);
-        
+        base.OnCreate();
+        m_ecbs = World.GetExistingSystem<EndSimulationEntityCommandBufferSystem>();
     }
 
-    private void FindTarget(NativeArray<LocalToWorld> _targetsPositionArray,
-        NativeArray<EnemyTagComponent> _targetLayerNativeArray)
-    {
-        Entities.ForEach(
-            (Entity _entity,  in LocalToWorld _localToWorld) =>
-            {
-                var nearestTarget = _targetsPositionArray[0];
-            }).WithDisposeOnCompletion(_targetsPositionArray).ScheduleParallel();
-    }
-    /*
     protected override void OnUpdate()
     {
-        var query = GetEntityQuery(ComponentType.ReadOnly<EnemyTagComponent>(), ComponentType.ReadOnly<LocalToWorld>());
-        var translationArray = query.ToComponentDataArray<LocalToWorld>(Allocator.TempJob);
+        var ecb = m_ecbs.CreateCommandBuffer().AsParallelWriter();
         
-        Entities.WithAll<PlayerTagComponent>().ForEach((Entity _entity, ref Translation _translation) =>
-        {
-            for (var i = 0; i < translationArray.Length; i++)
+        m_query = GetEntityQuery(ComponentType.ReadOnly<EnemyTagComponent>(), 
+            ComponentType.ReadOnly<LocalToWorld>());
+        var translationArray = m_query.ToComponentDataArray<LocalToWorld>(Allocator.TempJob);
+        var entityArray = m_query.ToEntityArray(Allocator.TempJob);
+        
+        Entities
+            .WithReadOnly(translationArray)
+            .WithReadOnly(entityArray)
+            .WithAll<PlayerTagComponent>()
+            .ForEach((Entity _entity, int entityInQueryIndex, ref TargetDetectionComponent _targetData, in Translation _translation) =>
             {
-                var position = translationArray[i].Position;
-                /*if (math.distancesq(translationArray[i].Position, _translation.Value) < 25)
+                
+                _targetData.m_nbReachableTargets = 0;
+                ecb.AddBuffer<TargetCollection>(entityInQueryIndex, _entity);
+     
+                for (var i = 0; i < translationArray.Length; i++)
                 {
+                    //if (entityArray[i] == null) continue;
+                    if (!(math.distancesq(translationArray[i].Position, _translation.Value) < 25)) continue;
                     
+                    ecb.AppendToBuffer( entityInQueryIndex, _entity, new TargetCollection {m_entity = entityArray[i]});
                 }
-            }
-        }).WithDisposeOnCompletion(translationArray).ScheduleParallel();
+            })
+            .WithDisposeOnCompletion(translationArray)
+            .WithDisposeOnCompletion(entityArray)
+            .ScheduleParallel();
         
+        m_ecbs.AddJobHandleForProducer(this.Dependency);
 
-    }*/
+    }
 }
