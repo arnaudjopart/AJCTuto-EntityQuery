@@ -9,7 +9,6 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-[UpdateAfter(typeof(EndSimulationEntityCommandBufferSystem))]
 public partial class DetectNearestEnemySystem : SystemBase
 {
     private EntityQuery m_query;
