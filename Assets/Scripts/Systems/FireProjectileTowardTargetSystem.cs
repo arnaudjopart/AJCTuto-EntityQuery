@@ -22,7 +22,10 @@ namespace Systems
             
             var localToWorldFromEntity = GetComponentDataFromEntity<LocalToWorld>(true);
 
-            Entities.WithReadOnly(localToWorldFromEntity).WithReadOnly(buffer).ForEach((Entity _entity, int entityInQueryIndex,ref FireWeaponComponent _weaponData, in Translation _translation) =>
+            Entities
+                .WithReadOnly(localToWorldFromEntity)
+                .WithReadOnly(buffer)
+                .ForEach((Entity _entity, int entityInQueryIndex,ref FireWeaponComponent _weaponData, in Translation _translation) =>
             {
                 var collection = buffer[_entity];
                 if (_weaponData.m_currentRate > 0)
@@ -38,7 +41,7 @@ namespace Systems
                     var projectile  = ecb.Instantiate(entityInQueryIndex, _weaponData.m_projectileEntityPrefab);
                     ecb.SetComponent(entityInQueryIndex,projectile, new Translation
                     {
-                        Value = _translation.Value
+                        Value = _translation.Value+new float3(0,.5f,0)
                     });
                     ecb.AddComponent(entityInQueryIndex,projectile, new TargetComponent
                     {

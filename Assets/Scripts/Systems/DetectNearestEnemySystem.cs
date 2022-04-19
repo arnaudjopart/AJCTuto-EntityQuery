@@ -24,7 +24,7 @@ public partial class DetectNearestEnemySystem : SystemBase
     {
         var ecb = m_ecbs.CreateCommandBuffer().AsParallelWriter();
         
-        m_query = GetEntityQuery(ComponentType.ReadOnly<EnemyTagComponent>(), 
+        m_query = GetEntityQuery(ComponentType.ReadOnly<EnemyTagComponent>(),ComponentType.Exclude<WillBeDestroyedComponent>(), 
             ComponentType.ReadOnly<LocalToWorld>());
         var translationArray = m_query.ToComponentDataArray<LocalToWorld>(Allocator.TempJob);
         var entityArray = m_query.ToEntityArray(Allocator.TempJob);
@@ -54,4 +54,8 @@ public partial class DetectNearestEnemySystem : SystemBase
         m_ecbs.AddJobHandleForProducer(this.Dependency);
 
     }
+}
+
+public struct WillBeDestroyedComponent : IComponentData
+{
 }

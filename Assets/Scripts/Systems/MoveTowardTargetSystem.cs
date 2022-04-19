@@ -18,7 +18,7 @@ public partial class MoveTowardTargetSystem : SystemBase
         {
             var targetPosition = translations[_target.m_entity];
             var direction = math.normalize(targetPosition.Position - _translation.Value);
-            _moveDirectionComponent.m_value = direction;
+            //_moveDirectionComponent.m_value = direction;
         }).ScheduleParallel();
     }
 }
