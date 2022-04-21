@@ -1,6 +1,4 @@
 using Unity.Entities;
-using Unity.Mathematics;
-using Unity.Transforms;
 using UnityEngine;
 
 public partial class AddSpinSystem : SystemBase
@@ -32,59 +30,23 @@ public partial class AddSpinSystem : SystemBase
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            Entities.WithStructuralChanges().ForEach((Entity _entity) =>
+            Entities.WithStructuralChanges().WithAll<SpinData>().ForEach((Entity _entity) =>
             {
                 EntityManager.AddComponentData(_entity, new LifeTime()
                 {
-                    m_value = 10
+                    m_value = 4
                 });
             }).Run();
         }
+        if (Input.GetKeyDown(KeyCode.Delete))
+        {
+            Entities.WithStructuralChanges().WithAll<SpinData>().ForEach((Entity _entity) =>
+            {
+                EntityManager.DestroyEntity(_entity);
+            }).Run();
+        }
         
-    }
-}
-
-
-public partial class SpinSystem : SystemBase
-{
-    
-    protected override void OnUpdate()
-    {
-        var deltaTime = Time.DeltaTime;
-        Entities.ForEach((ref Rotation _rotation, in SpinData _spinData) =>
-        {
-            var nextRotation = math.mul(_rotation.Value, quaternion.RotateY(deltaTime*_spinData.m_speed));
-            _rotation.Value = nextRotation;
-
-        }).Run();
-    }
-}
-
-
-public partial class DeleteCubeSystem : SystemBase
-{
-    
-    protected override void OnUpdate()
-    {
         
-        Entities.WithStructuralChanges().ForEach((Entity _entity, in LifeTime _lifeTime) =>
-        {
-           if(_lifeTime.m_value<=0) EntityManager.DestroyEntity(_entity);
-
-        }).Run();
-    }
-}
-public partial class DecreaseLifeTimeSystem : SystemBase
-{
-    
-    protected override void OnUpdate()
-    {
-        var deltaTime = Time.DeltaTime;
-        Entities.ForEach((ref LifeTime _lifeTime) =>
-        {
-            
-            _lifeTime.m_value -= deltaTime;
-        }).Run();
     }
 }
 
