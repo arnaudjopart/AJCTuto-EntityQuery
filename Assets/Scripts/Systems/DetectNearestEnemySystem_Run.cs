@@ -12,7 +12,7 @@ namespace Systems
         protected override void OnCreate()
         {
             base.OnCreate();
-            Debug.Log("Start");
+            //Debug.Log("Start");
         }
 
         protected override void OnUpdate()

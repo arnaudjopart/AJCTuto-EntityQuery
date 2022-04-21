@@ -3,7 +3,48 @@ using UnityEngine;
 
 public partial class AddSpinSystem : SystemBase
 {
-    private EndSimulationEntityCommandBufferSystem m_ecbs;
+
+    protected override void OnUpdate()
+    {
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            Entities.WithStructuralChanges().WithAll<SpinCubeTag>().WithNone<SpinData>().ForEach((Entity _entity) =>
+            {
+                EntityManager.AddComponentData(_entity, new SpinData
+                {
+                    m_speed = 5
+                });
+                
+            }).Run();
+        }
+        
+        
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+public struct LifeTime : IComponentData
+{
+    public float m_value;
+}
+
+/*
+
+ private EndSimulationEntityCommandBufferSystem m_ecbs;
 
     protected override void OnCreate()
     {
@@ -27,31 +68,22 @@ public partial class AddSpinSystem : SystemBase
             
             m_ecbs.AddJobHandleForProducer(Dependency);
         }
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            Entities.WithStructuralChanges().WithAll<SpinData>().ForEach((Entity _entity) =>
-            {
-                EntityManager.AddComponentData(_entity, new LifeTime()
-                {
-                    m_value = 4
-                });
-            }).Run();
-        }
-        if (Input.GetKeyDown(KeyCode.Delete))
-        {
-            Entities.WithStructuralChanges().WithAll<SpinData>().ForEach((Entity _entity) =>
-            {
-                EntityManager.DestroyEntity(_entity);
-            }).Run();
-        }
-        
         
     }
-}
-
-
-public struct LifeTime : IComponentData
+if (Input.GetKeyDown(KeyCode.D))
 {
-    public float m_value;
+    Entities.WithStructuralChanges().WithAll<SpinData>().ForEach((Entity _entity) =>
+    {
+        EntityManager.AddComponentData(_entity, new LifeTime()
+        {
+            m_value = 4
+        });
+    }).Run();
 }
+if (Input.GetKeyDown(KeyCode.Delete))
+{
+    Entities.WithStructuralChanges().WithAll<SpinData>().ForEach((Entity _entity) =>
+    {
+        EntityManager.DestroyEntity(_entity);
+    }).Run();
+}*/
