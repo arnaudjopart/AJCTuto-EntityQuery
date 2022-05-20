@@ -20,10 +20,10 @@ namespace Systems
         {
             var ecb = m_ecbs.CreateCommandBuffer().AsParallelWriter();
         
-            m_query = GetEntityQuery(ComponentType.ReadOnly<PlayerTagComponent>(),ComponentType.Exclude<WillBeDestroyedComponent>(), 
+            m_query = GetEntityQuery(ComponentType.ReadOnly<PlayerTagComponent_Run>(),ComponentType.Exclude<WillBeDestroyedComponent>(), 
                 ComponentType.ReadOnly<LocalToWorld>());
             var translationArray = m_query.ToComponentDataArray<LocalToWorld>(Allocator.TempJob);
-            var entityArray = m_query.ToEntityArray(Allocator.TempJob);
+            var entityArray = m_query.ToEntityArray(Allocator.Temp);
         
             Entities
                 .WithReadOnly(translationArray)
@@ -35,8 +35,7 @@ namespace Systems
                     dynamicBuffer.Clear();
                     
                     var closestPlayer = FindClosestEntity(translationArray, entityArray, _translation);
-                    
-                    ecb.AppendToBuffer( entityInQueryIndex, _entity, new TargetCollection {m_entity = closestPlayer});
+                    if(closestPlayer!=Entity.Null) ecb.AppendToBuffer( entityInQueryIndex, _entity, new TargetCollection {m_entity = closestPlayer});
                 })
                 .WithDisposeOnCompletion(translationArray)
                 .WithDisposeOnCompletion(entityArray)
@@ -47,6 +46,7 @@ namespace Systems
 
         private static Entity FindClosestEntity(NativeArray<LocalToWorld> _translationArray, NativeArray<Entity> _entityArray, Translation _translation)
         {
+            if (_entityArray.Length == 0) return Entity.Null;
             var possibleClosestPlayer = _entityArray[0];
             var currentSmallestDistance = math.distancesq(_translationArray[0].Position, _translation.Value);
             

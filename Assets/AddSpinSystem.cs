@@ -3,18 +3,31 @@ using UnityEngine;
 
 public partial class AddSpinSystem : SystemBase
 {
-
     protected override void OnUpdate()
     {
+        
         if (Input.GetKeyDown(KeyCode.S))
         {
-            Entities.WithStructuralChanges().WithAll<SpinCubeTag>().WithNone<SpinData>().ForEach((Entity _entity) =>
+            Entities.WithAll<SpinCubeTag>().ForEach((Entity _entity, ref SpinData _spinData) =>
             {
-                EntityManager.AddComponentData(_entity, new SpinData
-                {
-                    m_speed = 5
-                });
+                _spinData.m_speed = 5;
+
+            }).ScheduleParallel();
+        }
+        
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            Entities.WithStructuralChanges().WithAll<SpinData>().ForEach((Entity _entity) =>
+            {
+                EntityManager.RemoveComponent<SpinData>(_entity);
                 
+            }).Run();
+        }
+        if (Input.GetKeyDown(KeyCode.Delete))
+        {
+            Entities.WithStructuralChanges().WithAll<SpinData>().ForEach((Entity _entity) =>
+            {
+                EntityManager.DestroyEntity(_entity);
             }).Run();
         }
         
