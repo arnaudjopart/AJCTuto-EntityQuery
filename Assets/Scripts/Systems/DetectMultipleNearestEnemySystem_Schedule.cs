@@ -9,7 +9,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-public partial class DetectNearestEnemySystem : SystemBase
+public partial class DetectMultipleNearestEnemySystem_Schedule : SystemBase
 {
     private EntityQuery m_query;
     private EndSimulationEntityCommandBufferSystem m_ecbs;

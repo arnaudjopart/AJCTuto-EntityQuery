@@ -21,19 +21,15 @@ namespace Systems
             var positions = enemyEntityQuery.ToComponentDataArray<LocalToWorld>(Allocator.Temp);
             var targetEntityArray = enemyEntityQuery.ToEntityArray(Allocator.Temp);
             
-            Entities.WithoutBurst().WithAll<PlayerTagComponent_Run>().ForEach(
-                (Entity _entity, ref TargetDetectionComponent _targetDetection,in LocalToWorld _localToWorld) =>
+            Entities.WithoutBurst().WithAll<MultiTargetTagComponent>().ForEach(
+                (Entity _entity, in LocalToWorld _localToWorld) =>
                 {
-                    Debug.Log(positions.Length);
-                    
-                    _targetDetection.m_nbReachableTargets = 0;
                     var buffer = EntityManager.GetBuffer<TargetCollection>(_entity);
                     buffer.Clear();
                     for (var i = 0; i < positions.Length; i++)
                     {
                         if (math.distancesq(positions[i].Position, _localToWorld.Position) > 25) continue;
-                        
-                        _targetDetection.m_nbReachableTargets += 1;
+
                         buffer.Add(new TargetCollection
                         {
                             m_entity = targetEntityArray[i]
@@ -45,12 +41,6 @@ namespace Systems
                 .WithDisposeOnCompletion(targetEntityArray)
                 .Run();
                 
-        }
-
-        protected override void OnStopRunning()
-        {
-            base.OnStopRunning();
-            Debug.Log("OnStopRunning");
         }
     }
 }

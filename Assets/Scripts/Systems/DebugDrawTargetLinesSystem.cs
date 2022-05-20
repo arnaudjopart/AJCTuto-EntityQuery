@@ -12,7 +12,7 @@ public partial class DebugDrawTargetLinesSystem : SystemBase
     {
         var lookup = GetBufferFromEntity<TargetCollection>();
         
-        Entities.WithAny<PlayerTagComponent, PlayerTagComponent_Run>().ForEach((Entity _entity,in LocalToWorld _localToWorld) =>
+        Entities.WithAll<PlayerTagComponent, MultiTargetTagComponent>().ForEach((Entity _entity,in LocalToWorld _localToWorld) =>
         {
             var buffer = lookup[_entity];
             foreach (var VARIABLE in buffer)

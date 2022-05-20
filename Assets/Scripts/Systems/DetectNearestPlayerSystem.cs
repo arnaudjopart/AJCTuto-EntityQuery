@@ -20,10 +20,10 @@ namespace Systems
         {
             var ecb = m_ecbs.CreateCommandBuffer().AsParallelWriter();
         
-            m_query = GetEntityQuery(ComponentType.ReadOnly<PlayerTagComponent_Run>(),ComponentType.Exclude<WillBeDestroyedComponent>(), 
+            m_query = GetEntityQuery(ComponentType.ReadOnly<PlayerTagComponent>(),ComponentType.Exclude<WillBeDestroyedComponent>(), 
                 ComponentType.ReadOnly<LocalToWorld>());
             var translationArray = m_query.ToComponentDataArray<LocalToWorld>(Allocator.TempJob);
-            var entityArray = m_query.ToEntityArray(Allocator.Temp);
+            var entityArray = m_query.ToEntityArray(Allocator.TempJob);
         
             Entities
                 .WithReadOnly(translationArray)

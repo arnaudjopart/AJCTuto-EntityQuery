@@ -6,9 +6,8 @@ using UnityEngine;
 
 public class AddTargetCollectionBufferConversion : MonoBehaviour, IConvertGameObjectToEntity
 {
-    
-    public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+    public void Convert(Entity _entity, EntityManager _dstManager, GameObjectConversionSystem _conversionSystem)
     {
-        dstManager.AddBuffer<TargetCollection>(entity);
+        _dstManager.AddBuffer<TargetCollection>(_entity);
     }
 }

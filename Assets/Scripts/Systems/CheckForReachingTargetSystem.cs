@@ -1,3 +1,4 @@
+using System.Net;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -22,12 +23,20 @@ namespace Systems
                 (Entity _entity, int entityInQueryIndex, in LocalToWorld _localToWorld,
                     in TargetComponent _targetComponent) =>
                 {
+                    if (_targetComponent.m_entity == Entity.Null) return;
+                    
                     var targetCurrentPosition = lookup[_targetComponent.m_entity].Position;
+                    
                     if (!(math.distancesq(_localToWorld.Position, targetCurrentPosition) < .5f)) return;
-                    //Debug.Log("reached");
+
+                    ecb.SetComponent(entityInQueryIndex,_entity,new TargetComponent()
+                    {
+                        m_entity = Entity.Null
+                    });
+                    
                     ecb.DestroyEntity(entityInQueryIndex, _entity);
-                    ecb.AddComponent<WillBeDestroyedComponent>(entityInQueryIndex, _targetComponent.m_entity);
                     ecb.DestroyEntity(entityInQueryIndex, _targetComponent.m_entity);
+                    
                 }).WithDisposeOnCompletion(lookup).ScheduleParallel();
             m_ecbs.AddJobHandleForProducer(Dependency);
         }

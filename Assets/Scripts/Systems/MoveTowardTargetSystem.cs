@@ -12,14 +12,14 @@ public partial class MoveTowardTargetSystem : SystemBase
     
     protected override void OnUpdate()
     {
-        var translations = GetComponentDataFromEntity<LocalToWorld>(true);
+       /* var translations = GetComponentDataFromEntity<LocalToWorld>(true);
 
         Entities.WithReadOnly(translations).ForEach((ref MoveDirectionComponent _moveDirectionComponent, in TargetComponent _target, in Translation _translation) =>
         {
             var targetPosition = translations[_target.m_entity];
             var direction = math.normalize(targetPosition.Position - _translation.Value);
             //_moveDirectionComponent.m_value = direction;
-        }).ScheduleParallel();
+        }).ScheduleParallel();*/
     }
 }
 
