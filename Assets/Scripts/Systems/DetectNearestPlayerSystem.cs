@@ -28,19 +28,21 @@ namespace Systems
             Entities
                 .WithReadOnly(translationArray)
                 .WithReadOnly(entityArray)
-                .WithAll<EnemyTagComponent>()
+                .WithAll<EnemyTagComponent,LookingForTarget>()
                 .ForEach((Entity _entity, int entityInQueryIndex,  in Translation _translation) =>
                 {
                     var dynamicBuffer = ecb.AddBuffer<TargetCollection>(entityInQueryIndex, _entity);
                     dynamicBuffer.Clear();
                     
                     var closestPlayer = FindClosestEntity(translationArray, entityArray, _translation);
-                    if(closestPlayer!=Entity.Null) ecb.AppendToBuffer( entityInQueryIndex, _entity, new TargetCollection {m_entity = closestPlayer});
+                    if (closestPlayer == Entity.Null) return;
+                    ecb.AppendToBuffer( entityInQueryIndex, _entity, new TargetCollection {m_entity = closestPlayer});
+                    ecb.RemoveComponent<LookingForTarget>(entityInQueryIndex,_entity);
                 })
                 .WithDisposeOnCompletion(translationArray)
                 .WithDisposeOnCompletion(entityArray)
                 .ScheduleParallel();
-        
+            
             m_ecbs.AddJobHandleForProducer(Dependency);
         }
 

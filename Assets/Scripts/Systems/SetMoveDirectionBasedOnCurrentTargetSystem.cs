@@ -24,7 +24,7 @@ namespace Systems
 
         
             var localToWorldFromEntity = GetComponentDataFromEntity<LocalToWorld>(true);
-            Entities.WithReadOnly(buffer).WithReadOnly(localToWorldFromEntity).ForEach((Entity _entity, int entityInQueryIndex,in Translation _translation) =>
+            Entities.WithReadOnly(buffer).WithNone<MoveDirectionComponent>().WithReadOnly(localToWorldFromEntity).ForEach((Entity _entity, int entityInQueryIndex,in Translation _translation) =>
             {
                 if (!buffer.HasComponent(_entity)) return;
                 var dynamicBuffer = buffer[_entity];
