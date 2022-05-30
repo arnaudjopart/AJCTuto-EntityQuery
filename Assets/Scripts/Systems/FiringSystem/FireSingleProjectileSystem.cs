@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Components;
 using Systems;
+using Systems.EnemyDetection;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;

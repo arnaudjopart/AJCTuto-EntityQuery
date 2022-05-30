@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-internal class Projectile : MonoBehaviour
+public class Projectile : MonoBehaviour
 {
     private Transform m_target;
     private float m_speed = 10;
@@ -17,7 +17,7 @@ internal class Projectile : MonoBehaviour
 
         if (Vector3.Distance(m_target.position, transform.position) < .1f)
         {
-            Destroy(m_target.gameObject);
+            m_target.gameObject.SetActive(false);
             Destroy(gameObject);
         }
     }

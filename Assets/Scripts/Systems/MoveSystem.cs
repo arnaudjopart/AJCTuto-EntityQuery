@@ -1,11 +1,9 @@
 using Unity.Entities;
-using Unity.Jobs;
-using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Systems
 {
-    [UpdateInGroup(typeof(TestGroup))]
+
     public partial class MoveSystem : SystemBase
     {
         protected override void OnUpdate()
@@ -19,23 +17,8 @@ namespace Systems
             
             Dependency.Complete();
         }
-
-        
     }
-    /*
-    public struct MoveJob : IJobEntityBatch
-    {
-        public ComponentTypeHandle<float3> velocityHandle
-        public void Execute(ArchetypeChunk batchInChunk, int batchIndex)
-        {
-            throw new System.NotImplementedException();
-        }
-    }*/
+
 }
 
 
-[UpdateInGroup(typeof(SimulationSystemGroup))]
-public class TestGroup : ComponentSystemGroup
-{
-    
-}

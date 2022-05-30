@@ -1,5 +1,6 @@
 using System.Net;
 using Components;
+using Systems.EnemyDetection;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;

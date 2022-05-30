@@ -4,6 +4,6 @@ using Unity.Entities;
 using UnityEngine;
 
 [GenerateAuthoringComponent]
-public struct SingleTargetTagComponent : IComponentData
+public struct SingleTargetOnMainThreadTagComponent : IComponentData
 {
 }

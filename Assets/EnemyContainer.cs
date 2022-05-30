@@ -7,25 +7,15 @@ using UnityEngine;
 
 public class EnemyContainer : MonoBehaviour
 {
-    public Transform[] m_players;
-    [HideInInspector]
-    public List<MoveToTarget> listOfEnemies = new List<MoveToTarget>();
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private Transform[] m_players;
+    [HideInInspector] public List<MoveToTarget> m_listOfEnemies = new List<MoveToTarget>();
+
+    private void Start()
     {
-        
-        listOfEnemies = transform.GetComponentsInChildren<MoveToTarget>().ToList();
-        foreach (var VARIABLE in listOfEnemies)
+        m_listOfEnemies = transform.GetComponentsInChildren<MoveToTarget>().ToList();
+        foreach (var enemy in m_listOfEnemies)
         {
-
-            VARIABLE.FindNearestTarget(m_players);
+            enemy.FindNearestTarget(m_players);
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        listOfEnemies = transform.GetComponentsInChildren<MoveToTarget>().ToList();
-        Debug.Log(listOfEnemies.Count);
     }
 }
